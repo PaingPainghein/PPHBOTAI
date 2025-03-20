@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPHBOTAI Voice Chat</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .chat-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .chat-box {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .chat-message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+        .ai-message {
+            background-color: #e9ecef;
+            color: #333;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        #sendText {
+            background-color: #007bff;
+        }
+        #sendText:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>PPHBOTAI Voice Chat</h1>
+        <div class="chat-box" id="chatBox">
+            <div class="chat-message ai-message">PPHBOTAI: မင်္ဂလာပါ၊ ဘယ်လိုအကူအညီပေးရမလဲ?</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="textInput" placeholder="စာသားရိုက်ပါ...">
+            <button id="sendText">ပို့မယ်</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const textInput = document.getElementById('textInput');
+        const sendTextBtn = document.getElementById('sendText');
+
+        const HUGGINGFACE_API_KEY = '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';
+        const ELEVENLABS_API_KEY = 'sk_f86fc6d5587d526d5917f5b54b45de3100a4519d8b6ef4b4';
+        const HUGGINGFACE_URL = 'https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill';
+        const ELEVENLABS_TTS_URL = 'https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM';
+        const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
+
+        sendTextBtn.addEventListener('click', async () => {
+            const userText = textInput.value.trim();
+            if (userText) {
+                addMessage(`သင်: ${userText}`, 'user-message');
+                await getAIResponse(userText);
+                textInput.value = '';
+            }
+        });
+
+        textInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendTextBtn.click();
+            }
+        });
+
+        async function getAIResponse(inputText) {
+            try {
+                const response = await fetch(PROXY_URL + HUGGINGFACE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${HUGGINGFACE_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ inputs: inputText })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const aiResponse = data[0]?.generated_text || 'တောင်းပန်ပါတယ်၊ ပြန်စာမထုတ်နိုင်ခဲ့ပါ။';
+                addMessage(`PPHBOTAI: ${aiResponse}`, 'ai-message');
+                await textToSpeech(aiResponse);
+            } catch (error) {
+                addMessage(`PPHBOTAI: ချိတ်ဆက်မှု အမှားအယွင်းရှိနေပါတယ် - ${error.message}`, 'ai-message');
+            }
+        }
+
+        async function textToSpeech(text) {
+            try {
+                const response = await fetch(ELEVENLABS_TTS_URL, {
+                    method: 'POST',
+                    headers: {
+                        'xi-api-key': ELEVENLABS_API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        model_id: 'eleven_multilingual_v1',
+                        voice_settings: { stability: 0.5, similarity_boost: 0.5 }
+                    })
+                });
+
+                if (!response.ok) throw new Error('ElevenLabs API ချိတ်ဆက်မှု မအောင်မြင်ပါ');
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+            } catch (error) {
+                addMessage(`PPHBOTAI: အသံထုတ်မှု အမှား - ${error.message}`, 'ai-message');
+            }
+        }
+
+        function addMessage(text, className) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${className}`;
+            messageDiv.textContent = text;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
