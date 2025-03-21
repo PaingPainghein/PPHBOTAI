@@ -1,10 +1,10 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, jsonify
 from gtts import gTTS
 import os
 
 app = Flask(__name__)
 
-# မြန်မာ တုံ့ပြန်မှု dictionary "PPH AI" နဲ့
+# မြန်မာ တုံ့ပြန်မှု dictionary
 responses = {
     "မင်္ဂလာပါ": "မင်္ဂလာပါ။ PPH AI မှ ကြိုဆိုပါတယ်။ ဘာကူညီပေးရမလဲ?",
     "ဟိုင်း": "ဟိုင်း။ PPH AI က ဘာလဲလို့ မေးကြည့်လိုက်မယ်?",
@@ -37,10 +37,13 @@ def index():
 def speak():
     text = request.form['text']
     response = get_response(text)
-    tts = gTTS(text=response, lang='my', slow=False)
-    audio_file = "static/response.mp3"
-    tts.save(audio_file)
-    return send_file(audio_file, mimetype="audio/mp3")
+    try:
+        tts = gTTS(text=response, lang='my', slow=False)
+        audio_file = "static/response.mp3"
+        tts.save(audio_file)
+        return send_file(audio_file, mimetype="audio/mp3")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     if not os.path.exists('static'):
