@@ -11,10 +11,13 @@ def index():
 @app.route('/speak', methods=['POST'])
 def speak():
     text = request.form['text']
-    tts = gTTS(text=text, lang='my', slow=False)  # 'my' for Myanmar
-    audio_file = "response.mp3"
+    tts = gTTS(text=text, lang='my', slow=False)  # 'my' က မြန်မာဘာသာအတွက်
+    audio_file = "static/response.mp3"  # static folder ထဲမှာ သိမ်းမယ်
     tts.save(audio_file)
     return send_file(audio_file, mimetype="audio/mp3")
 
 if __name__ == '__main__':
+    # static folder ရှိမရှိ စစ်ပြီး မရှိရင် ဖန်တီးပါ
+    if not os.path.exists('static'):
+        os.makedirs('static')
     app.run(debug=True, host='0.0.0.0', port=5000)
