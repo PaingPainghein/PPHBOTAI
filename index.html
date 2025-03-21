@@ -100,7 +100,7 @@
             PPH AI
         </div>
         <div class="chat-body" id="chatBody">
-            <div class="chat-message bot-message">မင်္ဂလာပါ PPH AI မှ ကြိုဆိုပါတယ်။ ဘာကူညီပေးရမလဲ?</div>
+            <div class="chat-message bot-message">မင်္ဂလာပါ။ PPH AI မှ ကြိုဆိုပါတယ်။ ဘာကူညီပေးရမလဲ?</div>
         </div>
         <div class="chat-footer">
             <input type="text" class="chat-input" id="chatInput" placeholder="မေးချင်တာရိုက်ထည့်ပါ...">
@@ -121,32 +121,46 @@
                 userMessage.textContent = message;
                 chatBody.appendChild(userMessage);
 
-                // Send request to server for response and audio
-                const formData = new FormData();
-                formData.append('text', message);
-                const audioResponse = await fetch('/speak', {
-                    method: 'POST',
-                    body: formData
-                });
-                const audioBlob = await audioResponse.blob();
-                const audioUrl = URL.createObjectURL(audioBlob);
-                const audio = new Audio(audioUrl);
+                try {
+                    // Send request to server for audio response
+                    const formData = new FormData();
+                    formData.append('text', message);
+                    const audioResponse = await fetch('/speak', {
+                        method: 'POST',
+                        body: formData
+                    });
 
-                // Display bot response
-                setTimeout(() => {
+                    if (!audioResponse.ok) {
+                        throw new Error('Server error: ' + audioResponse.status);
+                    }
+
+                    const audioBlob = await audioResponse.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+
+                    // Display bot response
                     const botMessage = document.createElement('div');
                     botMessage.className = 'chat-message bot-message';
-                    botMessage.textContent = "..."  // Placeholder until audio plays
+                    botMessage.textContent = "ဖြေနေပါတယ်...";
                     chatBody.appendChild(botMessage);
                     chatBody.scrollTop = chatBody.scrollHeight;
+
+                    // Play audio and update message
                     audio.play();
                     audio.onended = () => {
-                        botMessage.textContent = audioResponse.headers.get('X-Response-Text') || message; // Ideally fetch text
+                        botMessage.textContent = responses[message] || "သင်ပြောတာကို နားမလည်ဘူး။"; // Simplified
                     };
-                }, 1000);
+                } catch (error) {
+                    console.error('Error:', error);
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'chat-message bot-message';
+                    botMessage.textContent = "တစ်ခုခု မှားနေပါတယ်။ ထပ်ကြိုးစားကြည့်ပါ။";
+                    chatBody.appendChild(botMessage);
+                }
 
                 // Clear input
                 input.value = '';
+                chatBody.scrollTop = chatBody.scrollHeight;
             }
         }
 
@@ -156,6 +170,23 @@
                 sendMessage();
             }
         });
+
+        // Client-side responses for display (optional, synced with server)
+        const responses = {
+            "မင်္ဂလာပါ": "မင်္ဂလာပါ။ PPH AI မှ ကြိုဆိုပါတယ်။ ဘာကူညီပေးရမလဲ?",
+            "ဟိုင်း": "ဟိုင်း။ PPH AI က ဘာလဲလို့ မေးကြည့်လိုက်မယ်?",
+            "နေကောင်းလား": "ကျွန်တော် နေကောင်းပါတယ်။ သင်ရော နေကောင်းလား?",
+            "ကျေးဇူးပါ": "ရပါတယ်။ PPH AI က နောက်ထပ် ဘာကူညီပေးရမလဲ?",
+            "ဘာမှမသိဘူး": "စိတ်မပူပါနဲ့။ သင်သိချင်တာ ဘာလဲဆိုတာ ပြောပြရင် PPH AI က ရှင်းပြပေးမယ်။",
+            "သွားတော့မယ်": "အိုကေ။ နောက်တစ်ခါ PPH AI နဲ့ ပြန်တွေ့မယ်နော်။ ဂရုစိုက်ပါ။",
+            "ဂွတ်ဘိုင်": "ဂွတ်ဘိုင်။ PPH AI နဲ့ နောက်မှ ထပ်ဆုံကြမယ်။",
+            "ဘယ်သူလဲ": "ကျွန်တော်က PPH AI စကားပြောစက်ပါ။ သင့်ကို ကူညီဖို့ ဖန်တီးထားတာပါ။",
+            "ဘာလုပ်လို့ရလဲ": "PPH AI က မေးခွန်းတွေ ဖြေပေးနိုင်တယ်၊ စကားပြောနိုင်တယ်၊ အချက်အလက် ရှာပေးနိုင်တယ်။ ဘာလုပ်ချင်လဲ?",
+            "ဘယ်ကလာလဲ": "ကျွန်တော်က ဒစ်ဂျစ်တယ် ကမ္ဘာက လာတာပါ။ PPH AI လို နေရာမျိုးက ဖန်တီးထားတာပါ။",
+            "ဘယ်လောက်သိလဲ": "PPH AI က အများကြီး သိအောင် လေ့ကျင့်ထားပါတယ်။ သင်မေးတာကို ဖြေကြည့်လို့ရပါတယ်။",
+            "အခုဘယ်နာရီလဲ": "အခုနာရီက မတ်လ ၂၀ ရက်၊ ၂၀၂၅ ခုနှစ်မှာ အချိန်ပေါ်မူတည်ပါတယ်။ သင့်စက်ကို ကြည့်လိုက်ပါ။",
+            "ဒီနေ့ ရာသီဥတု ဘယ်လိုလဲ": "PPH AI က ဒီနေ့ ရာသီဥတုကို တိကျစွာ မပြောနိုင်ပေမယ့် သင့်မြို့ကို ပြောပြရင် ရှာပေးနိုင်ပါတယ်။"
+        };
     </script>
 </body>
 </html>
