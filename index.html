@@ -103,7 +103,6 @@
     </div>
 
     <script>
-        // Extensive Myanmar chatbot responses with new topics
         const botResponses = {
             "မင်္ဂလာပါ": "မင်္ဂလာပါ။ ဘာအကြောင်းပြောချင်လဲ?",
             "ဟိုင်း": "ဟိုင်း။ ဘာလဲလို့ မေးကြည့်လိုက်မယ်?",
@@ -112,19 +111,11 @@
             "ဘာမှမသိဘူး": "စိတ်မပူပါနဲ့။ သင်သိချင်တာ ဘာလဲဆိုတာ ပြောပြရင် ရှင်းပြပေးမယ်။",
             "သွားတော့မယ်": "အိုကေ။ နောက်တစ်ခါ ပြန်တွေ့မယ်နော်။ ဂရုစိုက်ပါ။",
             "ဂွတ်ဘိုင်": "ဂွတ်ဘိုင်။ နောက်မှ ထပ်ဆုံကြမယ်။",
-
             "ဘယ်သူလဲ": "ကျွန်တော်က PPH AI စကားပြောစက်ပါ။ သင့်ကို ကူညီဖို့ ဖန်တီးထားတာပါ။",
             "ဘာလုပ်လို့ရလဲ": "ကျွန်တော်က မေးခွန်းတွေ ဖြေပေးနိုင်တယ်၊ စကားပြောနိုင်တယ်၊ အချက်အလက် ရှာပေးနိုင်တယ်။ ဘာလုပ်ချင်လဲ?",
             "ဘယ်ကလာလဲ": "ကျွန်တော်က ဒစ်ဂျစ်တယ် ကမ္ဘာက လာတာပါ။ xAI လို နေရာမျိုးက ဖန်တီးထားတာပါ။",
             "ဘယ်လောက်သိလဲ": "ကျွန်တော်က အများကြီး သိအောင် လေ့ကျင့်ထားပါတယ်။ သင်မေးတာကို ဖြေကြည့်လို့ရပါတယ်။",
-
             "Ais VPN စမတ်နည်း": "Ais VPN စမတ်နည်းက အောက်ပါအတိုင်းပါ။\n- ပင်မ ပရိုမိုးရှင်း: 64kbps - ၃၂ ဘတ် / ၃၀ ရက် (*777*7067# ကို ခေါ်ပါ)\n- Ais Play ပရိုမိုးရှင်း: ၆၄ ဘတ် / ၃၀ ရက် (*777*885# ကို ခေါ်ပါ)\nမှတ်ချက်: ပရိုမိုးရှင်း နှစ်ခုလုံး စမတ်ပြီးမှ သုံးလို့ရပါတယ်ခင်ဗျာ။",
-            "Ais VPN ဘယ်လိုသုံးရမလဲ": "Ais VPN သုံးဖို့ ပရိုမိုးရှင်း နှစ်ခုရှိပါတယ်။\n- ပင်မ ပရိုမိုးရှင်း: 64kbps - ၃၂ ဘတ် / ၃၀ ရက် (*777*7067# ကို ခေါ်ပါ)\n- Ais Play ပရိုမိုးရှင်း: ၆၄ ဘတ် / ၃၀ ရက် (*777*885# ကို ခေါ်ပါ)\nမှတ်ချက်: ပရိုမိုးရှင်း နှစ်ခုလုံး စမတ်ပြီးမှ သုံးလို့ရပါတယ်ခင်ဗျာ။",
-            "Ais VPN ဘယ်လောက်ကျလဲ": "Ais VPN အတွက် ကုန်ကျစရိတ်က အောက်ပါအတိုင်းပါ။\n- ပင်မ ပရိုမိုးရှင်း: ၃၂ ဘတ် / ၃၀ ရက်\n- Ais Play ပရိုမိုးရှင်း: ၆၄ ဘတ် / ၃၀ ရက်\nစမတ်ပြီးမှ သုံးလို့ရပါတယ်ခင်ဗျာ။",
-            "True VPN စမတ်နည်း": "True VPN စမတ်နည်းက အောက်ပါအတိုင်းပါ။\n- ကုဒ်: *900*1880#\n- ကုန်ကျစရိတ်: ၈၅ ဘတ်\nဒီကုဒ်ကို စမတ်ပြီးရင် သုံးလို့ရပါတယ်။ နောက်ထပ် ဘာသိချင်လဲ?",
-            "Dtac VPN စမတ်နည်း": "Dtac VPN စမတ်နည်းက လောလောဆယ် မရှိသေးဘူး။ စိတ်မကောင်းပါဘူး။ နောက်ထပ် အချက်အလက်ရရင် ပြန်ပြီး အပ်ဒိတ်လုပ်ပေးပါမယ်။ တခြား ဘာကူညီပေးရမလဲ?",
-            "စမတ်ပြီးရင်": "စမတ်ပြီးရင် ပြီးပြီးလား ထင်ရပေမယ့် VIP ဖို့ ၇၀ ဘတ် ထပ်ကုန်ဦးမယ်။ Paing Paing Hein ဆီ ဆက်သွယ်မေးမြန်းနိုင်ပါတယ်။ နောက်ထပ် ဘာသိချင်လဲ?",
-            "မြန်မာနိုင်ငံ": "မြန်မာနိုင်ငံက အရှေ့တောင်အာရှမှာ ရှိတဲ့ နိုင်ငံတစ်နိုင်ငံပါ။ မြို့တော်က နေပြည်တော်ဖြစ်ပြီး၊ လူဦးရေ ၅၅ သန်းလောက် ရှိပါတယ်။ ဘာသာစကားက မြန်မာစကားဖြစ်ပြီး၊ ဗုဒ္ဓဘာသာကို အဓိက ကိုးကွယ်ကြပါတယ်။ နောက်ထပ် ဘာသိချင်လဲ?",
             "default": "သင်ပြောတာကို နားမလည်ဘူး။ နောက်တစ်ခါ ပြန်ပြောပြပါ။ ဘာကူညီပေးရမလဲ?"
         };
 
@@ -138,7 +129,7 @@
             return botResponses["default"];
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('chatInput');
             const chatBody = document.getElementById('chatBody');
             const message = input.value.trim();
@@ -151,14 +142,26 @@
                 chatBody.appendChild(userMessage);
 
                 // Simulate bot response
-                setTimeout(() => {
+                setTimeout(async () => {
                     const botMessage = document.createElement('div');
                     botMessage.className = 'chat-message bot-message';
                     const response = getBotResponse(message);
                     botMessage.textContent = response;
                     chatBody.appendChild(botMessage);
-                    chatBody.scrollTop = chatBody.scrollHeight; // Scroll to bottom
-                }, 1000); // Delay to simulate thinking
+                    chatBody.scrollTop = chatBody.scrollHeight;
+
+                    // Send request to server to get audio
+                    const formData = new FormData();
+                    formData.append('text', response);
+                    const audioResponse = await fetch('/speak', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const audioBlob = await audioResponse.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    audio.play();
+                }, 1000);
 
                 // Clear input
                 input.value = '';
